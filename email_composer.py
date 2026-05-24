@@ -5,34 +5,40 @@ def format_date(iso_string):
     try:
         dt = datetime.fromisoformat(iso_string.replace("Z", "+00:00"))
         return dt.strftime("%B %d, %Y at %I:%M %p")
-    except:
+    except Exception:
         return iso_string
 
 def compose_email(customer_name, work_order_number, summary, technician, completed_date):
-    subject = f"Your HP Service Visit is Complete — Work Order #{work_order_number}"
+    subject = f"HP Service Follow-Up — Work Order #{work_order_number}"
     first_name = customer_name.split()[0] if customer_name else "Valued Customer"
     formatted_date = format_date(completed_date)
     html_body = f"""<!DOCTYPE html>
-<html><body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:20px;">
-<table width="600" style="background:#fff;border-radius:8px;overflow:hidden;margin:auto;">
-<tr><td style="background:#0096d6;padding:24px 40px;">
-<span style="font-size:28px;font-weight:700;color:#fff;">hp</span>
-<span style="font-size:13px;color:rgba(255,255,255,0.8);margin-left:12px;">Field Services</span>
+<html><body style="font-family:'Segoe UI',Arial,sans-serif;background:#f5f5f5;padding:20px;">
+<table width="620" style="background:#fff;border-radius:8px;margin:auto;overflow:hidden;">
+<tr><td style="background:#0096d6;padding:26px 40px;">
+<span style="font-size:30px;font-weight:700;color:#fff;">hp</span>
+<span style="font-size:12px;color:rgba(255,255,255,0.85);margin-left:12px;text-transform:uppercase;letter-spacing:1.5px;">Field Services</span>
+</td></tr>
+<tr><td style="background:#f0f7ff;padding:14px 40px;border-bottom:1px solid #d6eaf8;">
+Work Order: <strong style="color:#0096d6;">#{work_order_number}</strong> &nbsp;|&nbsp;
+Technician: <strong>{technician}</strong> &nbsp;|&nbsp;
+Completed: <strong>{formatted_date}</strong>
 </td></tr>
 <tr><td style="padding:32px 40px;">
-<h2 style="color:#1a1a1a;">Hi {first_name},</h2>
-<p style="color:#555;">Your HP service visit has been completed successfully.</p>
-<table width="100%" style="border:1px solid #e5e5e5;border-radius:6px;">
-<tr><td style="background:#f8f8f8;padding:12px 20px;" colspan="2"><strong>Work Order Details</strong></td></tr>
-<tr><td style="padding:12px 20px;color:#888;width:40%;">Work Order #</td><td style="padding:12px 20px;font-weight:600;">{work_order_number}</td></tr>
-<tr><td style="padding:12px 20px;color:#888;">Technician</td><td style="padding:12px 20px;">{technician}</td></tr>
-<tr><td style="padding:12px 20px;color:#888;">Completed</td><td style="padding:12px 20px;">{formatted_date}</td></tr>
-<tr><td style="padding:12px 20px;color:#888;vertical-align:top;">Summary</td><td style="padding:12px 20px;">{summary or "Service completed successfully."}</td></tr>
-</table>
-<p style="color:#555;margin-top:24px;">Questions? Call <a href="tel:{Config.SUPPORT_PHONE}" style="color:#0096d6;">{Config.SUPPORT_PHONE}</a> or email <a href="mailto:{Config.SUPPORT_EMAIL}" style="color:#0096d6;">{Config.SUPPORT_EMAIL}</a></p>
+<p style="font-size:18px;font-weight:600;color:#1a1a1a;">Dear {first_name},</p>
+<p style="font-size:15px;color:#333;line-height:1.8;">I am the on-site service technician that had the pleasure of performing the repair on your HP Product. At HP Inc., our goal is to provide you with <strong>Best-In-Class service</strong> and therefore I am following up with you to ensure that the service delivered by HP was completed to your satisfaction.</p>
+<p style="font-size:15px;color:#333;line-height:1.8;">If you have any concerns, please contact myself or my District Manager, <strong>Tom Stanton</strong>, at <a href="mailto:tom.stanton@hp.com" style="color:#0096d6;">tom.stanton@hp.com</a>.</p>
+<p style="font-size:15px;color:#333;line-height:1.8;">Based on your experience received by HP, I sincerely hope you can recommend HP to a friend, family member or colleague. If this is not something you feel you could do, please feel free to contact me or my manager with your concerns.</p>
+<table width="100%"><tr><td style="background:#f0f7ff;border-left:4px solid #0096d6;padding:20px 24px;border-radius:4px;">
+<p style="margin:0 0 10px 0;font-size:15px;font-weight:600;">📋 Customer Satisfaction Survey</p>
+<p style="margin:0;font-size:14px;color:#444;line-height:1.7;">You may receive an email asking you to participate in a brief web-based Customer Satisfaction Survey from <strong>hp-feedback@feedback.hp.com</strong> with the subject <em>"Your opinion means the world to us"</em>. Your responses are extremely important to me and will enable HP to provide you the best Service and Support.</p>
+<p style="margin:12px 0 0 0;font-size:14px;color:#444;line-height:1.7;">If there is any reason throughout the entire support experience where you feel we wouldn't deserve a <strong>4 or 5 on the survey</strong>, please let me or my manager know.</p>
+</td></tr></table>
+<p style="font-size:15px;color:#333;margin-top:24px;line-height:1.8;">Thank you for your continued business with HP Inc. <strong>You are very much appreciated!</strong></p>
+<p style="font-size:15px;color:#333;">Sincerely,<br><strong>{technician}</strong><br><span style="color:#888;font-size:13px;">HP Field Services Technician</span></p>
 </td></tr>
-<tr><td style="background:#f8f8f8;padding:16px 40px;border-top:1px solid #e5e5e5;">
-<p style="font-size:12px;color:#aaa;margin:0;">Automated notification from HP Field Services. Do not reply directly.<br>© {datetime.now().year} HP Inc.</p>
+<tr><td style="background:#f8f8f8;padding:18px 40px;border-top:1px solid #e5e5e5;">
+<p style="font-size:12px;color:#aaa;margin:0;">Automated follow-up from HP Field Services. © {datetime.now().year} HP Inc.</p>
 </td></tr>
 </table></body></html>"""
     return subject, html_body
